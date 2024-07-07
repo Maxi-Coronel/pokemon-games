@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
+import './App.css';
 
 const App = ()  => {
-
   return (
-    <div>
-      <h1>Pokédex</h1>
+    <div className='app-container'>
+      <header className='app-header'>
+        <h1>Pokédex</h1>
+      </header>
+      <main className='app-main'>
+        <PokemonContainer />
+      </main>
     </div>
   );
 }

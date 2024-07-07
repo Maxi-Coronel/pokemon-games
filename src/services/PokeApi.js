@@ -11,7 +11,7 @@ export const fetchPokemonList =async () => {
     }
 };
 
-export const fetchPokemonDatail = async (name) => {
+export const fetchPokemonDatails = async (name) => {
     try{
         const response = await axios.get(`${API_BASE_URL}/pokemon/${name}`);
         return response.data;
