@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { fetchPokemonDatails } from '../../../services/PokeApi'
+import { getPokemonDatails } from "../../../services/PokeApi";
+import './Pokemon.css'
 
-const Pokemon = ({name}) => {
-    const [pokemon, setPokemon] = useState(null)
+const Pokemon = ({ pokemonName }) => {
+    const [details, setDetails] = useState('null')
     const [loading, setLoading] = useState(null)
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        const getPokemonDetails = async() => {
+        const fetchDetails = async () => {
             setLoading(true);
             setError(null);
             try {
-                const data = await fetchPokemonDatails(name);
-                setPokemon(data);
+                const pokemonDetails = await getPokemonDatails(pokemonName);
+                setDetails(pokemonDetails);
             } catch (err) {
                 setError(err);
             } finally {
@@ -20,10 +21,10 @@ const Pokemon = ({name}) => {
             }
         };
 
-        if (name) {
-            getPokemonDetails();
+        if (pokemonName) {
+            fetchDetails();
         }
-    },[name]);
+    }, [pokemonName]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -31,13 +32,25 @@ const Pokemon = ({name}) => {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
+    if (!details.sprites) {
+        return <div>Pokemon not found or missing image</div>;
+    }
 
     return (
-        <div>
-            <h1>{pokemon.name}</h1>
-            <img src={pokemon.sprites.front_default} alt={pokemon.name} />
-            <p>Height: {pokemon.heigth}</p>
-            <p>Weight: {pokemon.weigth}</p>
+        <div className="pokemon-container">
+            <h2>{details.name}</h2>
+            <img src={details.sprites.front_default} alt={details.name} />
+            <p>Height: {details.height}</p>
+            <p>Weight: {details.weight}</p>
+            <p>Base Experience: {details.base_experience}</p>
+            <h3>Stats:</h3>
+            <ul>
+                {details.starts.map((stat, index) => (
+                    <li key={index}>
+                        {stat.stat.name}: {stat.base_stat}
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };

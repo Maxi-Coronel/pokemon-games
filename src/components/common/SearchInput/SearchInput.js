@@ -1,52 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './SearchInput.css'
+import { List, ListItem, ListItemText, Paper, TextField } from "@mui/material";
 
-const SearchInput = ({ pokemonList, onPokemonSelect }) => {
+const SearchInput = ({ pokemonList, onPokemonSelect, selectedGame }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
+    const [filteredPokemons, setFilteredPokemons] = useState([]);
 
+    useEffect(() => {
+        let filtered = pokemonList
+        if (selectedGame) {
+            filtered = pokemonList.filter(pokemon => pokemon.games.includes(selectedGame));
+        }
+        setFilteredPokemons(filtered)
+    }, [selectedGame, pokemonList])
 
     const handleChange = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-        if (value) {
-            const filteredSuggestions = pokemonList.filter( name => name.toLowerCase().startsWith(value.toLowerCase()));
-            setSuggestions(filteredSuggestions);
-        } else {
-            setSuggestions([]);
-        }
+        const term = e.target.term;
+        setSearchTerm(term);
+        const filtered = pokemonList.filter(pokemon => pokemon.toLowerCase().includes(term.toLowerCase()));
+        setFilteredPokemons(filtered)
     };
 
-    const handleKeyPress = (e) => {
-        if ( e.key === 'Enter') {
-            onPokemonSelect(searchTerm);
-            setSuggestions([]);
-        }
-    };
-
-    const handleSuggestionsClick = (suggestions) => {
-        setSearchTerm(suggestions);
-        onPokemonSelect(suggestions);
-        setSuggestions([]);
+    const handleSelected = (pokemon) => {
+        onPokemonSelect(pokemon);
+        setSearchTerm('');
+        setFilteredPokemons([]);
     };
 
     return (
         <div className="search-input">
-            <input 
-                type="text"
+            <TextField 
+                fullWidth
+                label='Search Pokemon'
                 value={searchTerm}
                 onChange={handleChange}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter pokemon name"
+                variant="outlined"
             />
-            {suggestions.length > 0 && (
-                <ul>
-                    {suggestions.map((suggestions, index) => (
-                        <li key={index} onClick={() => handleSuggestionsClick(suggestions)}>
-                            {suggestions}
-                        </li>
-                    ))}
-                </ul>
+            {filteredPokemons.length > 0 && (
+                <Paper className="search-results">
+                    <List>
+                        {filteredPokemons.map((pokemon, index) => (
+                            <ListItem button key={index} onClick={() => handleSelected(pokemon)}>
+                                <ListItemText primary={pokemon} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </Paper>
             )}
         </div>
     );
