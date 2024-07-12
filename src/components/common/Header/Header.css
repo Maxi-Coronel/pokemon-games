@@ -1,0 +1,14 @@
+.app-header {
+    background-image: url('https://4.bp.blogspot.com/-teanpgMdbJI/UfiAeU_StGI/AAAAAAAABSQ/x5jKmpuBpaA/s1600/F89.Pokemon.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 50px 0;
+  }
+  
+  .header-content h1 {
+    margin: 0;
+    font-size: 3em;
+    font-family: 'Pokemon', sans-serif;
+  }
